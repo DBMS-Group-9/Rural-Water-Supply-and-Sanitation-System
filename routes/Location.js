@@ -3,24 +3,26 @@ const router = express.Router();
 const connection = require('./../db');
 const config = require('./../config');
 
-async function setLocation(Pincode, Panchayat, District) {
-    try {
+router.get('/getalllocations', (req, res, next) => {
+    connection.query(`SELECT * from Locations`, function (err, result) {
+        if(err) 
+        {
+            res.status(500).json({ message: err.toString() });
+            return;
+        }
+        res.status(200).json({ message: "Locations Fetched Successfully!", result });
+    });
+});
 
-        await connection.query(`INSERT into Locations(Pincode, Panchayat, District) values(${Pincode}, '${Panchayat}', '${District}')`, function (err, result) {
-            if(err) throw err;
-            return { status: 200, response: { message: "Location Added Successfully!" } };
-        });
-    } catch (err) {
-        return { status: 400, response: { message: err.toString() } };
-    }
-};
-
-router.post('/setlocation', (req, res, next) => {
-    let resdata;
-    setLocation(req.body.Pincode, req.body.Panchayat, req.body.District)
-        .then(message => resdata = message)
-        .catch(err => resdata = config.errorResponse)
-        .finally(() => res.status(resdata.status).json(resdata.response));
+router.post('/addlocation', (req, res, next) => {
+    connection.query(`INSERT into Locations(Pincode, Panchayat, District) values(${req.body.Pincode}, '${req.body.Panchayat}', '${req.body.District}')`, function (err, result) {
+        if(err)
+        {
+            res.status(500).json({ message: err.toString() });
+            return
+        }
+        res.status(200).json({ message: "Location Added Successfully!" });
+    });
 });
 
 module.exports = router;

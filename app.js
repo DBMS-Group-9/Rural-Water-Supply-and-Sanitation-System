@@ -14,6 +14,8 @@ app.use(cors());
 
 require('./appInit');
 
+app.use('/api/auth', require('./routes/Auth'));
+
 app.use('/api/location', require('./routes/Location'));
 
 app.all('/api', (req, res, next) => { res.status(200).send('/api works'); });
