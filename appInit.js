@@ -144,8 +144,8 @@ function initializer() {
 			connection.query(
 				`create table if not exists Donations 
 		(
-			TransactionID varchar(6) not null, 
-			Accountint int, 
+			TransactionID int not null AUTO_INCREMENT, 
+			Account int, 
 			Amount decimal(10,2), 
 			DContact int, 
 			DDate varchar(25), 
