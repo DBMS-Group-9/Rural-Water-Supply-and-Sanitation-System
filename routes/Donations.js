@@ -15,7 +15,7 @@ router.get('/getalldonations', (req, res, next) => {
 });
 
 router.post('/adddonation', (req, res, next) => {
-    connection.query(`INSERT into Donations() values()`, function (err, result) {
+    connection.query(`INSERT into Donations(TransactionID,AccountNumber,Amount,DContact,DDate) values('${req.body.TransactionID}',${req.body.AccountNumber},${req.body.Amount},${req.body.DContact},'${req.body.DDate}')`, function (err, result) {
         if(err){
             res.status(500).json({ message: err.toString() });
             return;
