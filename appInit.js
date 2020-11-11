@@ -27,12 +27,12 @@ function initializer() {
 
 			connection.query(
 				`CREATE TABLE IF NOT EXISTS Locations
-			(
-				Pincode int not null, 
-				Panchayat varchar(15), 
-				District varchar(20), 
-				constraint pk_Pincode primary key (Pincode)
-			)
+					(
+						Pincode int not null, 
+						Panchayat varchar(15), 
+						District varchar(20), 
+						constraint pk_Pincode primary key (Pincode)
+					)
 			`,
 				function (err, result) {
 					if (err) throw err;
@@ -41,12 +41,12 @@ function initializer() {
 
 			connection.query(
 				`CREATE TABLE IF NOT EXISTS Jobs 
-			(
-				JobCode int not null AUTO_INCREMENT, 
-				Designation varchar(20), 
-				Shift varchar(15), 
-				constraint pk_JobCode primary key (JobCode)
-			)
+					(
+						JobCode int not null AUTO_INCREMENT, 
+						Designation varchar(20), 
+						Shift varchar(15), 
+						constraint pk_JobCode primary key (JobCode)
+					)
 			`,
 				function (err, result) {
 					if (err) throw err;
@@ -55,19 +55,19 @@ function initializer() {
 
 			connection.query(
 				`CREATE TABLE IF NOT EXISTS Employees
-			(
-				EmpID int not null AUTO_INCREMENT,
-				FName varchar(20), 
-				LName varchar(20), 
-				EContact int, 
-				JobCode int, 
-				Pincode int, 
-				Username varchar(35),
-				Password varchar(60) not null,
-				constraint pk_EmpID primary key (EmpID), 
-				constraint fk_JobCode FOREIGN KEY(JobCode) REFERENCES Jobs(JobCode), 
-				constraint fk_Pincode FOREIGN KEY(Pincode) REFERENCES Locations(Pincode) 
-			)
+					(
+						EmpID int not null AUTO_INCREMENT,
+						FName varchar(20), 
+						LName varchar(20), 
+						EContact BIGINT, 
+						JobCode int, 
+						Pincode int, 
+						Username varchar(35),
+						Password varchar(60) not null,
+						constraint pk_EmpID primary key (EmpID), 
+						constraint fk_JobCode FOREIGN KEY(JobCode) REFERENCES Jobs(JobCode), 
+						constraint fk_Pincode FOREIGN KEY(Pincode) REFERENCES Locations(Pincode) 
+					)
 			`,
 				function (err, result) {
 					if (err) throw err;
@@ -76,15 +76,15 @@ function initializer() {
 
 			connection.query(
 				`CREATE TABLE IF NOT EXISTS WaterSources
-			(
-				WSID int not null AUTO_INCREMENT,
-				WStatus varchar(15), 
-				WEstimation int, 
-				WCapacity int, 
-				Pincode int, 
-				constraint pk_WSID primary key (WSID), 
-				constraint fk_WPincode FOREIGN KEY(Pincode) REFERENCES Locations(Pincode) 
-			)
+					(
+						WSID int not null AUTO_INCREMENT,
+						WStatus varchar(15), 
+						WEstimation int, 
+						WCapacity int, 
+						Pincode int, 
+						constraint pk_WSID primary key (WSID), 
+						constraint fk_WPincode FOREIGN KEY(Pincode) REFERENCES Locations(Pincode) 
+					)
 			`,
 				function (err, result) {
 					if (err) throw err;
@@ -93,14 +93,14 @@ function initializer() {
 
 			connection.query(
 				`CREATE TABLE IF NOT EXISTS WaterUsages
-			(
-				WSID int not null,
-				Month varchar(10) not null, 
-				Year int not null, 
-				Usages int, 
-				constraint pk_WSID_MONTH_YEAR primary key (WSID, Month, Year), 
-				constraint fk_WSID FOREIGN KEY(WSID) REFERENCES WaterSources(WSID) 
-			)
+					(
+						WSID int not null,
+						Month varchar(10) not null, 
+						Year int not null, 
+						Usages int, 
+						constraint pk_WSID_MONTH_YEAR primary key (WSID, Month, Year), 
+						constraint fk_WSID FOREIGN KEY(WSID) REFERENCES WaterSources(WSID) 
+					)
 			`,
 				function (err, result) {
 					if (err) throw err;
@@ -109,14 +109,14 @@ function initializer() {
 
 			connection.query(
 				`create table if not exists SanitationSystems 
-		(
-			SSID int not null AUTO_INCREMENT,
-			SStatus varchar(15), 
-			SEstimation int, 
-			Pincode int, 
-			constraint pk_SSID primary key (SSID), 
-			constraint fk_SPincode FOREIGN KEY(Pincode) REFERENCES Locations(Pincode) 
-		)
+					(
+						SSID int not null AUTO_INCREMENT,
+						SStatus varchar(15), 
+						SEstimation int, 
+						Pincode int, 
+						constraint pk_SSID primary key (SSID), 
+						constraint fk_SPincode FOREIGN KEY(Pincode) REFERENCES Locations(Pincode) 
+					)
 			`,
 				function (err, result) {
 					if (err) throw err;
@@ -125,16 +125,15 @@ function initializer() {
 
 			connection.query(
 				`create table if not exists Families 
-		(
-			FID int not null AUTO_INCREMENT, 
-			Persons int, 
-			FHead varchar(10), 
-			Consumption int, 
-			FContact int, 
-			Pincode int, 
-			constraint pk_FID primary key (FID), 
-			constraint fk_FPincode FOREIGN KEY(Pincode) REFERENCES Locations(Pincode)  
-		)
+					(
+						FID int not null AUTO_INCREMENT, 
+						Persons int, 
+						FHead varchar(10), 
+						FContact BIGINT, 
+						Pincode int, 
+						constraint pk_FID primary key (FID), 
+						constraint fk_FPincode FOREIGN KEY(Pincode) REFERENCES Locations(Pincode)  
+					)
 			`,
 				function (err, result) {
 					if (err) throw err;
@@ -143,14 +142,14 @@ function initializer() {
 
 			connection.query(
 				`create table if not exists Donations 
-		(
-			TransactionID int not null AUTO_INCREMENT, 
-			Account int, 
-			Amount decimal(10,2), 
-			DContact int, 
-			DDate varchar(25), 
-			constraint pk_TransactionID primary key (TransactionID)  
-		)
+					(
+						TransactionID varchar(20) not null, 
+						AccountNumber int, 
+						Amount decimal(10,2), 
+						DContact BIGINT, 
+						DDate varchar(25), 
+						constraint pk_TransactionID primary key (TransactionID)  
+					)
 			`,
 				function (err, result) {
 					if (err) throw err;
@@ -159,18 +158,18 @@ function initializer() {
 
 			connection.query(
 				`create table if not exists Expenditures 
-		(
-			ExpenseID int not null AUTO_INCREMENT, 
-			EDate varchar(25), 
-			EmpID int, 
-			WSID int, 
-			SSID int, 
-			EAmount decimal(10,2), 
-			constraint pk_ExpenseID primary key (ExpenseID), 
-			constraint fk_EmpID FOREIGN KEY(EmpID) REFERENCES Employees(EmpID), 
-			constraint fk_EWSID FOREIGN KEY(WSID) REFERENCES WaterSources(WSID), 
-			constraint fk_SSID FOREIGN KEY(SSID) REFERENCES SanitationSystems(SSID)  
-		)
+					(
+						ExpenseID int not null AUTO_INCREMENT, 
+						EDate varchar(25), 
+						EmpID int, 
+						WSID int, 
+						SSID int, 
+						EAmount decimal(10,2), 
+						constraint pk_ExpenseID primary key (ExpenseID), 
+						constraint fk_EmpID FOREIGN KEY(EmpID) REFERENCES Employees(EmpID), 
+						constraint fk_EWSID FOREIGN KEY(WSID) REFERENCES WaterSources(WSID), 
+						constraint fk_SSID FOREIGN KEY(SSID) REFERENCES SanitationSystems(SSID)  
+					)
 			`,
 				function (err, result) {
 					if (err) throw err;
@@ -232,8 +231,12 @@ function initializer() {
 										`Admin: ${admins[admin].Username} created`
 									);
 									if (admin == admins.length - 1) {
-										console.log("finished seeding admins ✅\n");
-										console.log("App Initialization Complete!");
+										console.log(
+											"finished seeding admins ✅\n"
+										);
+										console.log(
+											"App Initialization Complete!"
+										);
 									}
 								}
 							);
@@ -245,7 +248,7 @@ function initializer() {
 								console.log("finished seeding admins ✅\n");
 								console.log("App Initialization Complete!");
 							}
-						}						
+						}
 					}
 				);
 			}

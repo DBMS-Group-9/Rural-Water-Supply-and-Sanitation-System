@@ -15,7 +15,7 @@ router.get('/getallfamilies', (req, res, next) => {
 });
 
 router.post('/addfamily', (req, res, next) => {
-    connection.query(`INSERT into Families(Persons, FHead, Consumption, FContact, Pincode) values(${req.body.Persons},'${req.body.FHead}',${req.body.Consumption},${req.body.FContact},${req.body.Pincode})`, function (err, result) {
+    connection.query(`INSERT into Families(Persons, FHead, FContact, Pincode) values(${req.body.Persons},'${req.body.FHead}',${req.body.FContact},${req.body.Pincode})`, function (err, result) {
         if(err){
             res.status(500).json({ message: err.toString() });
             return;
