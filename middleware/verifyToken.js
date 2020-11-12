@@ -6,6 +6,7 @@ module.exports = (req, res, next) => {
 		let decoded = jwt.verify(req.headers.authorization.split(' ')[1], config.secret);
 		if (decoded) {
 			req.userDetails = decoded;
+			console.log(req.userDetails);
 			next();
 		} else
 			throw new Error();

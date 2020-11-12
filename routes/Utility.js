@@ -3,6 +3,7 @@ const router = express.Router();
 const connection = require('./../db');
 const config = require('./../config');
 
+
 router.get('/getemergencyjobs', (req, res, next) => {
     connection.query(`SELECT JobCode, Designation from Jobs where Shift<>'Full-Time'`, function (err, result) {
         if(err)
@@ -23,4 +24,29 @@ router.post('/emergencydetails', (req, res, next) => {
         res.status(200).json({ message: "Employee Details Retrieved Successfully!", result });
     });
 });
+
+router.get('/getbalance', (req, res, next) => {
+    let donationsum = null;
+    let expendituresum = null;
+    connection.query(`select sum(Amount) from Donations`, function (err, result) {
+        if(err)
+        {
+            res.status(500).json({ message: err.toString() });
+            return;
+        }
+        donationsum = result[0];
+        connection.query(`select sum(EAmount) from Expenditures`, function (err, result) {
+            if(err)
+            {
+                res.status(500).json({ message: err.toString() });
+                return;
+            }
+            expendituresum = result[0];
+            // console.log(donationsum['sum(Amount)'], expendituresum['sum(EAmount)']);
+            res.status(200).json({ message: "Balance Fetched Successfully", balance: donationsum['sum(Amount)']-expendituresum['sum(EAmount)'] });
+        });
+    });
+});
+
+
 module.exports = router;

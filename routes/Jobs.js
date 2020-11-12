@@ -4,7 +4,7 @@ const connection = require('./../db');
 const config = require('./../config');
 
 router.get('/getalljobs', (req, res, next) => {
-    connection.query(`SELECT * from Jobs`, function (err, result) {
+    connection.query(`SELECT * from Jobs where JobCode<>1`, function (err, result) {
         if(err) 
         {
             res.status(500).json({ message: err.toString() });

@@ -9,7 +9,7 @@ module.exports = {
 		FName: 'admin',
 		LName: 'admin',
 		EContact: 0000000000,
-		JobCode: 1,
+		JobCode: 2,
 		Pincode: 000000
 	}]
 };

@@ -11,13 +11,13 @@ router.post('/login', (req, res, next) => {
             res.status(500).json({ message: err.toString() });
             return;
         }
-        if(result[0].length === 0) {
+        if(!result[0] || result[0].length === 0) {
             res.status(401).json({ message: "Username/Password Incorrect!" });
             return;
         }
         result = result[0];
         if(bcrypt.compareSync(req.body.Password,result.Password)) {
-            let token = jwt.sign({ Username: result.Username, JobCode: result.JobCode }, config.secret);
+            let token = jwt.sign({ Username: result.Username, JobCode: result.JobCode, EmpID: result.EmpID }, config.secret);
             connection.query(`Select * from Jobs where JobCode=${result.JobCode}`, function (err, jobResult) {
                 if(err) {
                     res.status(500).json({ message: err.toString() });

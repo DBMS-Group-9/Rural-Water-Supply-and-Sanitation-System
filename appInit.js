@@ -78,7 +78,7 @@ function initializer() {
 				`CREATE TABLE IF NOT EXISTS WaterSources
 					(
 						WSID int not null AUTO_INCREMENT,
-						WStatus varchar(15), 
+						WStatus varchar(20), 
 						WEstimation int, 
 						WCapacity int, 
 						Pincode int, 
@@ -111,7 +111,7 @@ function initializer() {
 				`create table if not exists SanitationSystems 
 					(
 						SSID int not null AUTO_INCREMENT,
-						SStatus varchar(15), 
+						SStatus varchar(20), 
 						SEstimation int, 
 						Pincode int, 
 						constraint pk_SSID primary key (SSID), 
@@ -181,6 +181,12 @@ function initializer() {
 				function (err, result) {
 					if (err) throw err;
 					if (result.length === 0) {
+						connection.query(
+							`INSERT into Jobs(Designation,Shift) values('Resigned', 'None')`,
+							function (err, result) {
+								if (err) throw err;
+							}
+						);
 						connection.query(
 							`INSERT into Jobs(Designation,Shift) values('Admin', 'Full-time')`,
 							function (err, result) {

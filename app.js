@@ -36,6 +36,8 @@ app.use('/api/expenditures', require('./routes/Expenditures'));
 
 app.use('/api/utility', require('./routes/Utility'));
 
+app.use('/api/analytics', require('./routes/Analytics'));
+
 app.all('/api', (req, res, next) => { res.status(200).send('/api works'); });
 app.all('*', function (req, res) { res.status(404).send('Whatever you are looking for, it\'s not here'); });
 
