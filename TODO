@@ -70,4 +70,6 @@ allssunderconstructionresult,
 
 Work Pending:
 
-Write Analytics route for pan
+Write Analytics route for stats by panchayat and district
+
+Water Usage - year logic - can record usage only for months that come after construction of source
