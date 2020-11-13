@@ -92,16 +92,7 @@ router.post('/updatewatersourcestatus', (req, res, next) => {
         }
     }
     else if(req.body.oldWStatus === 'Under-construction'){
-        if(req.body.WStatus === 'Under-maintenance'){
-            connection.query(`update WaterSources SET WStatus='Under-maintenance' where WSID=${req.body.WSID}`, function (err, result) {
-                if(err) {
-                    res.status(500).json({ message: err.toString() });
-                    return;
-                }
-                res.status(200).json({ message: "Water Source Approved and Status has been Updated Successfully!" });
-            });
-        }
-        else if(req.body.WStatus === 'Working'){
+        if(req.body.WStatus === 'Working'){
             connection.query(`update WaterSources SET WStatus='Working' where WSID=${req.body.WSID}`, function (err, result) {
                 if(err) {
                     res.status(500).json({ message: err.toString() });

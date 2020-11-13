@@ -92,16 +92,7 @@ router.post('/updatesanitationsystemstatus', (req, res, next) => {
         }
     }
     else if(req.body.oldSStatus === 'Under-construction'){
-        if(req.body.SStatus === 'Under-maintenance'){
-            connection.query(`update SanitationSystems SET SStatus='Under-maintenance' where WSID=${req.body.WSID}`, function (err, result) {
-                if(err) {
-                    res.status(500).json({ message: err.toString() });
-                    return;
-                }
-                res.status(200).json({ message: "Sanitation System Approved and Status has been Updated Successfully!" });
-            });
-        }
-        else if(req.body.SStatus === 'Working'){
+        if(req.body.SStatus === 'Working'){
             connection.query(`update SanitationSystems SET SStatus='Working' where WSID=${req.body.WSID}`, function (err, result) {
                 if(err) {
                     res.status(500).json({ message: err.toString() });
