@@ -183,4 +183,192 @@ router.get("/getallstatistics", (req, res, next) => {
 	);
 });
 
+
+router.post("/getpanchayatstatistics", (req, res, next) => {
+	let finalresult = {
+		totalFamiliesBenefitted: 0,
+		totalPeopleBenefitted: 0,
+		totalDonations: 0,
+		totalExpenditure: 0,
+		totalWaterSourcesConstructed: 0,
+		totalSanitationSystemsConstructed: 0,	
+		totalConstuctedBarGraph: [],
+		waterSourcesStatusPieChart: [],
+		sanitationSystemsStatusPieChart: [],
+	};
+
+	connection.query(
+		`Select count(FID) as familycount, sum(Persons) as peoplecount from Families where Pincode = ${req.body.Pincode}`,
+		function (err, result) {
+			if (err) {
+				res.status(500).json({ message: err.toString() });
+				return;
+			}
+			console.log('Families: ', result);
+			finalresult.totalFamiliesBenefitted = result[0].familycount;
+			finalresult.totalPeopleBenefitted = result[0].peoplecount;
+			connection.query(
+				`Select sum(e.EAmount) as totalexpenditure from Expenditures e join WaterSources w on e.WSID = w.WSID where w.Pincode = ${req.body.Pincode}`,
+				function (err, result) {
+					if (err) {
+						res.status(500).json({ message: err.toString() });
+						return;
+					}
+					console.log('Donations: ', result);
+					finalresult.totalDonations = result[0].totaldonations;
+					finalresult.totalExpenditure = result[0].totalexpenditure;
+					connection.query(
+						`SELECT e.EDate, e.WSID from Expenditures e join WaterSources w on e.wsid = w.wsid where w.Pincode = ${req.body.Pincode}`,
+						function (err, result) {
+							if (err) {
+								res.status(500).json({ message: err.toString() });
+								return;
+							}
+							console.log('EDate,WSID',result);
+							let constructedObjects = {};
+							for (let eachresult of result) {
+								let year = eachresult.EDate.split('-')[2];
+								if(constructedObjects[year]) {
+									constructedObjects[year].ws += 1
+								}
+								else {
+									constructedObjects[year] = { ws: 1, ss: 0 }
+								}
+							}
+							connection.query(
+								`SELECT e.EDate, e.SSID from Expenditures e join SanitationSystems s on e.ssid = s.ssid where s.Pincode = ${req.body.Pincode}`,
+								function (err, result) {
+									if (err) {
+										res.status(500).json({ message: err.toString() });
+										return;
+									}
+									console.log('EDate,SSID',result)	
+									for (let eachresult of result) {
+										let year = eachresult.EDate.split('-')[2];
+										if(constructedObjects[year]) {
+											constructedObjects[year].ss += 1
+										}
+										else {
+											constructedObjects[year] = { ws: 0, ss: 1 }
+										}
+									}
+									for(let key in constructedObjects) {
+										let eachObject = {
+											'name': key.toString(),
+											'Water Sources': constructedObjects[key].ws,
+											'Sanitation Systems': constructedObjects[key].ss
+										}
+										finalresult.totalConstuctedBarGraph.push(eachObject);
+									}
+									console.log('Modified Results: ', finalresult.totalConstuctedBarGraph);
+									connection.query(
+										`Select WStatus from WaterSources where Pincode = ${req.body.Pincode}`,
+										function (err, result) {
+											if (err) {
+												res.status(500).json({ message: err.toString() });
+												return;
+											}
+											console.log('WaterSourceStatuses: ', result);
+											let constructedObjects = {};
+											for (let eachresult of result) {
+												if(constructedObjects[eachresult.WStatus])
+													constructedObjects[eachresult.WStatus] += 1
+												else 
+													constructedObjects[eachresult.WStatus] = 1
+											}
+											for(let key in constructedObjects) {
+												let eachObject = {
+													'name': key,
+													'value': constructedObjects[key]
+												}
+												if(key === 'Planned') {
+													eachObject.fill= '#75AFE9'
+												}
+												else if(key === 'Approved') {
+													eachObject.fill= '#FFE338'
+												}
+												else if(key === 'Under-construction') {
+													eachObject.fill= '#b5651d '
+												}
+												else if(key === 'Working') {
+													eachObject.fill= '#28A428'
+												}
+												else if(key === 'Under-maintenance') {
+													eachObject.fill= '#D61A3C'
+												}							
+												finalresult.waterSourcesStatusPieChart.push(eachObject);
+												if(key === 'Working' || key === 'Under-maintainance') {
+													finalresult.totalWaterSourcesConstructed += constructedObjects[key];
+												}
+											}
+											console.log('WaterSourceStatus Data: ', finalresult.waterSourcesStatusPieChart);
+											console.log('TotalWaterSourcesConstructed: ', finalresult.totalWaterSourcesConstructed);
+											connection.query(
+												`Select SStatus from SanitationSystems where Pincode = ${req.body.Pincode}`,
+												function (err, result) {
+													if (err) {
+														res.status(500).json({ message: err.toString() });
+														return;
+													}
+													console.log('SanitationSystemsStatuses: ', result);
+													let constructedObjects = {};
+													for (let eachresult of result) {
+														if(constructedObjects[eachresult.SStatus])
+															constructedObjects[eachresult.SStatus] += 1
+														else 
+															constructedObjects[eachresult.SStatus] = 1
+													}
+													for(let key in constructedObjects) {
+														let eachObject = {
+															'name': key,
+															'value': constructedObjects[key]
+														}
+														if(key === 'Planned') {
+															eachObject.fill= '#75AFE9'
+														}
+														else if(key === 'Approved') {
+															eachObject.fill= '#FFE338'
+														}
+														else if(key === 'Under-construction') {
+															eachObject.fill= '#b5651d '
+														}
+														else if(key === 'Working') {
+															eachObject.fill= '#28A428'
+														}
+														else if(key === 'Under-maintenance') {
+															eachObject.fill= '#D61A3C'
+														}											
+														finalresult.sanitationSystemsStatusPieChart.push(eachObject);
+														if(key === 'Working' || key === 'Under-maintainance') {
+															finalresult.totalSanitationSystemsConstructed += constructedObjects[key];
+														}
+													}
+													console.log('SanitaionSystemsStatus Data: ', finalresult.sanitationSystemsStatusPieChart);
+													console.log('TotalSanitaionSystemsConstructed: ', finalresult.totalSanitationSystemsConstructed);
+													res.status(200).json({
+														message: "Statistics Fetched Successfully!",
+														finalresult,
+													});
+												}
+											);
+										}
+									);
+								}	
+							);							
+						}
+					);
+				}
+			);
+		}
+	);
+			
+});
+
 module.exports = router;
+
+
+
+// `SELECT WSID FROM WaterSources
+// 										WHERE Pincode = ANY (SELECT Pincode FROM Locations
+// 															 WHERE Locations.Pincode = WaterSources.Pincode and Locations.District = '${req.body.District}');`,
+										

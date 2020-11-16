@@ -14,6 +14,29 @@ router.get('/getalllocations', (req, res, next) => {
     });
 });
 
+router.get('/getalldistricts', (req, res, next) => {
+    connection.query(`SELECT DISTINCT(District) from Locations`, function (err, result) {
+        if(err) 
+        {
+            res.status(500).json({ message: err.toString() });
+            return;
+        }
+        res.status(200).json({ message: "Districts Fetched Successfully!", result });
+    });
+});
+
+
+router.get('/getallpanchayats', (req, res, next) => {
+    connection.query(`SELECT Panchayat,Pincode from Locations`, function (err, result) {
+        if(err) 
+        {
+            res.status(500).json({ message: err.toString() });
+            return;
+        }
+        res.status(200).json({ message: "Panchayats Fetched Successfully!", result });
+    });
+});
+
 router.post('/addlocation', (req, res, next) => {
     connection.query(`INSERT into Locations(Pincode, Panchayat, District) values(${req.body.Pincode}, '${req.body.Panchayat}', '${req.body.District}')`, function (err, result) {
         if(err)
@@ -24,5 +47,17 @@ router.post('/addlocation', (req, res, next) => {
         res.status(200).json({ message: "Location Added Successfully!" });
     });
 });
+
+router.post('/getcorrespondingpanchayats', (req, res, next) => {
+    connection.query(`SELECT Panchayat, Pincode from Locations where District=${req.body.District}`, function (err, result) {
+        if(err)
+        {
+            res.status(500).json({ message: err.toString() });
+            return
+        }
+        res.status(200).json({ message: "Location Added Successfully!" });
+    });
+});
+
 
 module.exports = router;
