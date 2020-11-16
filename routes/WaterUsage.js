@@ -25,4 +25,17 @@ router.post('/addwaterusage', (req, res, next) => {
     });
 });
 
+router.post('/getwaterusagemindate', (req, res, next) => {
+    connection.query(`SELECT EDate from Expenditures where WSID=${req.body.WSID}`, function (err, result) {
+        if (err) {
+            res.status(500).json({ message: err.toString() });
+            return;
+        }
+        let dateParts = result[0].EDate.split('-')
+        result = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
+        console.log(result);
+        res.status(200).json({ message: "Water Usage Date Fetched Successfully!", result });
+    });
+});
+
 module.exports = router;

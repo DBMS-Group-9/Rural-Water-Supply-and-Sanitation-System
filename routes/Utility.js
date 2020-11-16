@@ -5,7 +5,7 @@ const config = require('./../config');
 
 
 router.get('/getemergencyjobs', (req, res, next) => {
-    connection.query(`SELECT JobCode, Designation from Jobs where Shift<>'Full-Time'`, function (err, result) {
+    connection.query(`SELECT JobCode, Designation from Jobs where Shift<>'Full-Time' and JobCode<>1`, function (err, result) {
         if(err)
         {
             res.status(500).json({ message: err.toString() });
