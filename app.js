@@ -18,21 +18,21 @@ app.use('/api/auth', require('./routes/Auth'));
 
 app.use('/api/location', require('./routes/Location'));
 
-app.use('/api/jobs', require('./routes/Jobs'));
+app.use('/api/jobs', verifyToken, require('./routes/Jobs'));
 
-app.use('/api/employees', require('./routes/Employees'));
+app.use('/api/employees', verifyToken, require('./routes/Employees'));
 
-app.use('/api/watersources', require('./routes/WaterSources'));
+app.use('/api/watersources', verifyToken, require('./routes/WaterSources'));
 
-app.use('/api/waterusages', require('./routes/WaterUsage'));
+app.use('/api/waterusages', verifyToken, require('./routes/WaterUsage'));
 
-app.use('/api/sanitationsystems', require('./routes/SanitationSystems'));
+app.use('/api/sanitationsystems', verifyToken, require('./routes/SanitationSystems'));
 
-app.use('/api/families', require('./routes/Families'));
+app.use('/api/families', verifyToken, require('./routes/Families'));
 
 app.use('/api/donations', require('./routes/Donations'));
 
-app.use('/api/expenditures', require('./routes/Expenditures'));
+app.use('/api/expenditures', verifyToken, require('./routes/Expenditures'));
 
 app.use('/api/utility', require('./routes/Utility'));
 

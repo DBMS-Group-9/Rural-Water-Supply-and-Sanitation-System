@@ -4,6 +4,10 @@ const connection = require('./../db');
 const config = require('./../config');
 
 router.get('/getalljobs', (req, res, next) => {
+    if(req.userDetails.Designation !== 'Admin'){
+        res.status(400).json({ message: "Only Admins are Allowed to Get Jobs!" });
+        return;
+    }
     connection.query(`SELECT * from Jobs where JobCode<>1`, function (err, result) {
         if(err) 
         {
@@ -15,6 +19,10 @@ router.get('/getalljobs', (req, res, next) => {
 });
 
 router.post('/addjob', (req, res, next) => {
+    if(req.userDetails.Designation !== 'Admin'){
+        res.status(400).json({ message: "Only Admins are Allowed to Add Jobs!" });
+        return;
+    }
     connection.query(`INSERT into Jobs(Designation, Shift) values('${req.body.Designation}', '${req.body.Shift}')`, function (err, result) {
         if(err){
             res.status(500).json({ message: err.toString() });

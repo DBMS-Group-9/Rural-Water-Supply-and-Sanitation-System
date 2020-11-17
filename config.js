@@ -7,9 +7,9 @@ module.exports = {
 		Username: 'admin',
 		Password: 'admin',
 		FName: 'admin',
-		LName: 'admin',
-		EContact: 0000000000,
+		LName: 'user',
+		EContact: 9876543210,
 		JobCode: 2,
-		Pincode: 000000
+		Pincode: 641112
 	}]
 };

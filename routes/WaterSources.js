@@ -2,9 +2,12 @@ const express = require('express');
 const router = express.Router();
 const connection = require('./../db');
 const config = require('./../config');
-const VerifyToken = require('../middleware/verifyToken');
 
 router.get('/getallwatersources', (req, res, next) => {
+    if(req.userDetails.Designation !== 'Planning Engineer' && req.userDetails.Designation !== 'Operator'){
+        res.status(400).json({ message: "Only Planning Engineers are Allowed to get all water sources information!" });
+        return;
+    }
     connection.query(`SELECT * from WaterSources`, function (err, result) {
         if(err) 
         {
@@ -16,6 +19,10 @@ router.get('/getallwatersources', (req, res, next) => {
 });
 
 router.get('/getallplannedwatersources', (req, res, next) => {
+    if(req.userDetails.Designation !== 'Accountant'){
+        res.status(400).json({ message: "Only Accountants are Allowed to get planned water sources information!" });
+        return;
+    }
     connection.query(`SELECT * from WaterSources where WStatus='Planned'`, function (err, result) {
         if(err) 
         {
@@ -27,6 +34,10 @@ router.get('/getallplannedwatersources', (req, res, next) => {
 });
 
 router.get('/getallapprovedwatersources', (req, res, next) => {
+    if(req.userDetails.Designation !== 'Project Manager'){
+        res.status(400).json({ message: "Only Project Manager or Operator are Allowed to approve water sources information!" });
+        return;
+    }
     connection.query(`SELECT * from WaterSources where WStatus<>'Planned'`, function (err, result) {
         if(err) 
         {
@@ -38,6 +49,10 @@ router.get('/getallapprovedwatersources', (req, res, next) => {
 });
 
 router.post('/addwatersource', (req, res, next) => {
+    if(req.userDetails.Designation !== 'Planning Engineer'){
+        res.status(400).json({ message: "Only Planning Engineers are Allowed to plan a water source!" });
+        return;
+    }
     console.log(req.body);
     connection.query(`INSERT into WaterSources(WStatus,WEstimation,WCapacity,Pincode) values('${req.body.WStatus}',${req.body.WEstimation},${req.body.WCapacity},${req.body.Pincode})`, function (err, result) {
         if(err) {
@@ -48,7 +63,11 @@ router.post('/addwatersource', (req, res, next) => {
     });
 });
 
-router.post('/approvewatersource', VerifyToken, (req, res, next) => {
+router.post('/approvewatersource', (req, res, next) => {
+    if(req.userDetails.Designation !== 'Accountant'){
+        res.status(400).json({ message: "Only Accountants are Allowed to approve water source!" });
+        return;
+    }
     console.log(req.body);
     if(req.body.WStatus === 'Approved'){
         connection.query(`update WaterSources SET WStatus='Approved' where WSID=${req.body.WSID}`, function (err, result) {
@@ -76,6 +95,10 @@ router.post('/approvewatersource', VerifyToken, (req, res, next) => {
 });
 
 router.post('/updatewatersourcestatus', (req, res, next) => {
+    if(req.userDetails.Designation !== 'Project Manager'){
+        res.status(400).json({ message: "Only Project Manager are Allowed to update water sources status!" });
+        return;
+    }
     console.log(req.body);
     if(req.body.oldWStatus === 'Approved'){
         if(req.body.WStatus === 'Under-construction'){

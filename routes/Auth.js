@@ -16,13 +16,13 @@ router.post('/login', (req, res, next) => {
             return;
         }
         result = result[0];
-        if(bcrypt.compareSync(req.body.Password,result.Password)) {
-            let token = jwt.sign({ Username: result.Username, JobCode: result.JobCode, EmpID: result.EmpID }, config.secret);
+        if(bcrypt.compareSync(req.body.Password,result.Password)) {            
             connection.query(`Select * from Jobs where JobCode=${result.JobCode}`, function (err, jobResult) {
                 if(err) {
                     res.status(500).json({ message: err.toString() });
                     return;
                 }
+                let token = jwt.sign({ Username: result.Username, EmpID: result.EmpID, Designation: jobResult[0].Designation }, config.secret);
                 res.status(200).json({ message: "Login Successful!", Token: token, Designation: jobResult[0].Designation });
             });            
         }

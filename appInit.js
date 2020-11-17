@@ -144,7 +144,7 @@ function initializer() {
 				`create table if not exists Donations 
 					(
 						TransactionID varchar(20) not null, 
-						AccountNumber int, 
+						AccountNumber varchar(25), 
 						Amount decimal(10,2), 
 						DContact BIGINT, 
 						DDate varchar(25), 
@@ -198,12 +198,12 @@ function initializer() {
 			);
 
 			connection.query(
-				`select * from Locations where Pincode=000000`,
+				`select * from Locations where Pincode=641112`,
 				function (err, result) {
 					if (err) throw err;
 					if (result.length === 0) {
 						connection.query(
-							`INSERT into Locations(Pincode, Panchayat, District) values(000000, 'Panchayat', 'District')`,
+							`INSERT into Locations(Pincode, Panchayat, District) values(641112, 'Ettimadai', 'Coimbatore')`,
 							function (err, result) {
 								if (err) throw err;
 							}

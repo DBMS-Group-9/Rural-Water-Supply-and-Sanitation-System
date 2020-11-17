@@ -5,6 +5,10 @@ const config = require('./../config');
 const VerifyToken = require('../middleware/verifyToken');
 
 router.get('/getallsanitationsystems', (req, res, next) => {
+    if(req.userDetails.Designation !== 'Planning Engineer'){
+        res.status(400).json({ message: "Only Planning Engineers are Allowed to get all sanitation system information!" });
+        return;
+    }
     connection.query(`SELECT * from SanitationSystems`, function (err, result) {
         if(err) 
         {
@@ -16,6 +20,10 @@ router.get('/getallsanitationsystems', (req, res, next) => {
 });
 
 router.get('/getallplannedsanitationsystems', (req, res, next) => {
+    if(req.userDetails.Designation !== 'Accountant'){
+        res.status(400).json({ message: "Only Accountants are Allowed to get planned sanitation system information!" });
+        return;
+    }
     connection.query(`SELECT * from SanitationSystems where SStatus='Planned'`, function (err, result) {
         if(err) 
         {
@@ -27,6 +35,10 @@ router.get('/getallplannedsanitationsystems', (req, res, next) => {
 });
 
 router.get('/getallapprovedsanitationsystems', (req, res, next) => {
+    if(req.userDetails.Designation !== 'Project Manager'){
+        res.status(400).json({ message: "Only Project Manager are Allowed to get approved Sanitation Systems information!" });
+        return;
+    }
     connection.query(`SELECT * from SanitationSystems where SStatus<>'Planned'`, function (err, result) {
         if(err) 
         {
@@ -39,6 +51,10 @@ router.get('/getallapprovedsanitationsystems', (req, res, next) => {
 
 
 router.post('/addsanitationsystem', (req, res, next) => {
+    if(req.userDetails.Designation !== 'Planning Engineer'){
+        res.status(400).json({ message: "Only Planning Engineers are Allowed to plan a sanitation system!" });
+        return;
+    }
     connection.query(`INSERT into SanitationSystems(SStatus,SEstimation,Pincode) values('${req.body.SStatus}',${req.body.SEstimation},${req.body.Pincode})`, function (err, result) {
         if(err) {
             res.status(500).json({ message: err.toString() });
@@ -76,10 +92,14 @@ router.post('/approvesanitationsystem', VerifyToken, (req, res, next) => {
 });
 
 router.post('/updatesanitationsystemstatus', (req, res, next) => {
+    if(req.userDetails.Designation !== 'Project Manager'){
+        res.status(400).json({ message: "Only Project Manager are Allowed to update Sanitation Systems status!" });
+        return;
+    }
     console.log(req.body);
     if(req.body.oldSStatus === 'Approved'){
         if(req.body.SStatus === 'Under-construction'){
-            connection.query(`update SanitationSystems SET SStatus='Under-construction' where WSID=${req.body.WSID}`, function (err, result) {
+            connection.query(`update SanitationSystems SET SStatus='Under-construction' where SSID=${req.body.SSID}`, function (err, result) {
                 if(err) {
                     res.status(500).json({ message: err.toString() });
                     return;
@@ -93,7 +113,7 @@ router.post('/updatesanitationsystemstatus', (req, res, next) => {
     }
     else if(req.body.oldSStatus === 'Under-construction'){
         if(req.body.SStatus === 'Working'){
-            connection.query(`update SanitationSystems SET SStatus='Working' where WSID=${req.body.WSID}`, function (err, result) {
+            connection.query(`update SanitationSystems SET SStatus='Working' where SSID=${req.body.SSID}`, function (err, result) {
                 if(err) {
                     res.status(500).json({ message: err.toString() });
                     return;
@@ -107,7 +127,7 @@ router.post('/updatesanitationsystemstatus', (req, res, next) => {
     }
     else if(req.body.oldSStatus === 'Under-maintenance'){
         if(req.body.SStatus === 'Working'){
-            connection.query(`update SanitationSystems SET SStatus='Working' where WSID=${req.body.WSID}`, function (err, result) {
+            connection.query(`update SanitationSystems SET SStatus='Working' where SSID=${req.body.SSID}`, function (err, result) {
                 if(err) {
                     res.status(500).json({ message: err.toString() });
                     return;
@@ -121,7 +141,7 @@ router.post('/updatesanitationsystemstatus', (req, res, next) => {
     }
     else{
         if(req.body.SStatus === 'Under-maintenance'){
-            connection.query(`update SanitationSystems SET SStatus='Under-maintenance' where WSID=${req.body.WSID}`, function (err, result) {
+            connection.query(`update SanitationSystems SET SStatus='Under-maintenance' where SSID=${req.body.SSID}`, function (err, result) {
                 if(err) {
                     res.status(500).json({ message: err.toString() });
                     return;
