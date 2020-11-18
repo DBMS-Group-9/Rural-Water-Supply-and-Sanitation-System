@@ -4,11 +4,26 @@ const connection = require('./../db');
 const config = require('./../config');
 
 router.get('/getallwatersources', (req, res, next) => {
-    if(req.userDetails.Designation !== 'Planning Engineer' && req.userDetails.Designation !== 'Operator'){
+    if(req.userDetails.Designation !== 'Planning Engineer'){
         res.status(400).json({ message: "Only Planning Engineers are Allowed to get all water sources information!" });
         return;
     }
     connection.query(`SELECT * from WaterSources`, function (err, result) {
+        if(err) 
+        {
+            res.status(500).json({ message: err.toString() });
+            return;
+        }
+        res.status(200).json({ message: "Water Sources Fetched Successfully!", result });
+    });
+});
+
+router.get('/getworkingwatersources', (req, res, next) => {
+    if(req.userDetails.Designation !== 'Operator'){
+        res.status(400).json({ message: "Only Operators are Allowed to get all water sources information!" });
+        return;
+    }
+    connection.query(`SELECT * from WaterSources where WStatus='Working' or WStatus='Under-maintenance'`, function (err, result) {
         if(err) 
         {
             res.status(500).json({ message: err.toString() });
